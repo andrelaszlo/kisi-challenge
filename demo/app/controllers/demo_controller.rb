@@ -3,10 +3,7 @@ require 'pry'
 class DemoController < ApplicationController
   def index
     # binding.pry
-    @job_count = Demo::JobStats.job_count
-    @job_time = Demo::JobStats.job_time
-    @jobs_enqueued = Demo::JobStats.jobs_enqueued
-    @jobs_in_queue = @jobs_enqueued - @job_count
+    @stats = JobStats.stats
   end
 
   def start_job()

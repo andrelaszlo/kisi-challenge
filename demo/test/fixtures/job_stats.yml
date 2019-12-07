@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  job_count: 1
+  job_time: 1.5
+  jobs_enqueued: 1
+  best_hash_count: 1
+  best_hash_str: MyString
+  best_hash_hash: MyString
+
+two:
+  job_count: 1
+  job_time: 1.5
+  jobs_enqueued: 1
+  best_hash_count: 1
+  best_hash_str: MyString
+  best_hash_hash: MyString

@@ -4,14 +4,22 @@
 <a href="/demo/start_job/100"><button>Start 100 jobs</button></a>
 
 <dl>
-  <dt>Jobs in queue:</dt>
-  <dd><%= @jobs_in_queue %></dd>
+  <dt>Jobs enqueued:</dt>
+  <dd><%= @stats.jobs_enqueued %></dd>
 
   <dt>Jobs done:</dt>
-  <dd><%= @job_count %></dd>
+  <dd><%= @stats.job_count %></dd>
 
   <dt>Total job time:</dt>
-  <dd title="<%= Time.at(@job_time).utc.strftime('%H:%M:%S') %>">
-    <%= distance_of_time_in_words(@job_time.seconds) %>
+  <dd title="<%= Time.at(@stats.job_time).utc.strftime('%H:%M:%S') %>">
+    <%= distance_of_time_in_words(@stats.job_time.seconds) %>
   </dd>
+
+  <% if !@stats.best_hash_count.zero? %>
+  <dt>Best hash:</dt>
+  <dd>
+    <%= @stats.best_hash_count %> (<%= @stats.best_hash_str %>)
+  </dd>
+  <% end %>
+  
 </dl>

@@ -1,0 +1,2 @@
+class JobStat < ApplicationRecord
+end
