@@ -32,7 +32,7 @@ module JobStats
         Rails.logger.info "JobStats: New best #{count}"
         stats.best_hash_count = count
         stats.best_hash_str = str
-        stats.best_hash_hash = hash.inspect  # It's binary
+        stats.best_hash_hash = hash.inspect  # To avoid encoding problems (sqlite is picky)
       end
     end
   end

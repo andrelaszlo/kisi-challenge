@@ -34,6 +34,8 @@ The idea is to build a background job system that is compatible with the ActiveJ
 - https://github.com/ursm/activejob-google_cloud_pubsub
 - https://github.com/GoogleCloudPlatform/getting-started-ruby/blob/steps/6-task-queueing/lib/active_job/queue_adapters/pub_sub_queue_adapter.rb
 - https://github.com/googleapis/google-cloud-ruby/blob/master/google-cloud-pubsub/lib/google/cloud/pubsub/received_message.rb
+- https://www.rubydoc.info/gems/activejob
+- https://www.enterpriseintegrationpatterns.com/patterns/messaging/CompetingConsumers.html
 
 ## Run with local pubsub (for free!)
 
@@ -44,9 +46,12 @@ Install emulator:
 gcloud components install pubsub-emulator
 gcloud components update
 # Start the emulator
-```
-
-Run it:
-```
 gcloud beta emulators pubsub start --project=fake-project-id
 ```
+
+## Configuration
+
+See:
+- https://github.com/googleapis/google-cloud-ruby/tree/master/google-cloud-pubsub
+- https://googleapis.dev/ruby/google-cloud-pubsub/latest/index.html
+- https://googleapis.dev/ruby/google-cloud-pubsub/latest/file.AUTHENTICATION.html
