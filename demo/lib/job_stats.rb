@@ -5,14 +5,10 @@ module JobStats
   end
 
   ActiveSupport::Notifications.subscribe "perform.active_job" do |name, started, finished, unique_id, data|
-    if data[:exception].nil?
-      duration = finished - started
-      job_performed duration
-      Rails.logger.info "JobStats: perform.active_job ##{JobStats.job_count} took #{duration.round 2}s"
-      Rails.logger.debug "Data:\n#{data}"
-    else
-      Rails.logger.warn "JobStats: failed job #{data}"
-    end
+    duration = finished - started
+    job_performed duration
+    Rails.logger.info "JobStats: perform.active_job ##{JobStats.job_count} took #{duration.round 2}s"
+    Rails.logger.debug "Data:\n#{data}"
   end
 
   ActiveSupport::Notifications.subscribe(/enqueue(_at)?\.active_job/) do |name, started, finished, unique_id, data|

@@ -1,4 +1,29 @@
-<h1>Kisi Challenge</h1>
+<h1>KisiCoin miner</h1>
+
+<p>
+  This is <strike>the future of cryptocurrency</strike> a silly demo app.
+</p>
+
+<p>
+  Start background jobs using the buttons below. The jobs will be queued to Google
+  PubSub and processed by a worker.
+
+  The worker will generate a bunch of random strings, calculate their <code>SHA256</code> hashes
+  and check how many leading zeroes each hash has.<br>
+</p>
+
+<p>
+  The string hash with the most consecutive leading zeroes will be
+  saved reported below, along with the number of enqueued jobs,
+  completed jobs, and how much time has been spent in the workes in
+  total.
+</p>
+
+<p>
+  If you're using sqlite, you'll run into problems with concurrency if you add a lot
+  of jobs. 😢
+</p>
+
 <a href="/demo/start_job"><button>Do the job</button></a>
 <a href="/demo/start_job/5"><button>Start five jobs</button></a>
 <a href="/demo/start_job/100"><button>Start 100 jobs</button></a>
