@@ -20,7 +20,9 @@ module Demo
     Rails.application.config.active_job.queue_adapter = :pub_sub
 
     ActiveJob::PubSub::PubSubAdapter.configure do |config|
-      config[:max_retries] = 1
+      config[:max_retries] = 3
+      config[:worker_threads] = 8
+      config[:ack_threads] = 4
     end
 
     #Google::Cloud::PubSub.configure do |config|

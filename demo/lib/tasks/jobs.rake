@@ -3,17 +3,16 @@ namespace :jobs do
   task :work => :environment_options do
     Rails.logger.info "Starting worker"
     puts ActiveJob::PubSub::Worker.class
-    # TODO: options
-    ActiveJob::PubSub::Worker.new().process_jobs
+    ActiveJob::PubSub::Worker.new(**@options).process_jobs
   end
 
   task :environment_options => :environment do
-    Rails.logger.info "Getting env options"
+    @options = {}
+    @options[:queue] = ENV["WORKER_QUEUE"] if ENV["WORKER_QUEUE"]
   end
 
   desc 'Log to stdout'
   task :to_stdout => [:environment] do
     Rails.logger = Logger.new(STDOUT)
   end
-
 end

@@ -8,7 +8,8 @@ module ActiveJob::PubSub
       # Get or create the topic associated with a queue
       # @param [Symbol, String] queue Queue name
       def get_or_create_topic(queue)
-        topic_name = "activejob-#{queue}"
+        prefix = ActiveJob::PubSub::PubSubAdapter.config_item :queue_prefix
+        topic_name = "#{prefix}#{queue}"
         begin
           # Potential race condition here: if two processes fails to get
           # the topic, then tries to create it at the same time it may
@@ -25,7 +26,8 @@ module ActiveJob::PubSub
       # the "competing consumers" pattern.
       # @param [Symbol, String] queue Queue name
       def get_or_create_subscription(queue)
-        sub_name = "activejob-subscription-#{queue}"
+        prefix = ActiveJob::PubSub::PubSubAdapter.config_item :subscription_prefix
+        sub_name = "#{prefix}#{queue}"
         begin
           subscription(sub_name) || get_or_create_topic(queue).subscribe(sub_name)
         rescue Google::Cloud::AlreadyExistsError
