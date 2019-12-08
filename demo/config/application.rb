@@ -19,6 +19,10 @@ module Demo
     # TODO: Change to pubsub adapter
     Rails.application.config.active_job.queue_adapter = :pub_sub
 
+    ActiveJob::PubSub::PubSubAdapter.configure do |config|
+      config[:max_retries] = 1
+    end
+
     #Google::Cloud::PubSub.configure do |config|
       #config.project_id  = "fake-project-id"
       #config.credentials = "path/to/keyfile.json"

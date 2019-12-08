@@ -1,7 +1,7 @@
 require 'pry'
 
 class DemoController < ApplicationController
-  def index
+  def index()
     # binding.pry
     @stats = JobStats.stats
   end
@@ -12,6 +12,12 @@ class DemoController < ApplicationController
     num_jobs.times do
       DemoJob.perform_later
     end
+    redirect_back(fallback_location: '/')
+  end
+
+  def fail_job()
+    Rails.logger.info "Starting a failing job"
+    DemoJob.perform_later fail:true
     redirect_back(fallback_location: '/')
   end
 end

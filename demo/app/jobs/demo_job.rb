@@ -4,8 +4,24 @@ require 'digest'
 class DemoJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
+  # Random errors
+  @@job_errors = [
+    LocalJumpError.new("'Aaaahh...', this job jumped too far."),
+    SecurityError.new("I'm sorry, Dave. I'm afraid I can't do that."),
+    NoMemoryError.new("This job... uh... sorry where am I?"),
+    # https://www.youtube.com/watch?v=z5_1AO4zVBM
+    ZeroDivisionError.new("12 plus 9 is 21, adding up numbers is very fun. "\
+                         "7 plus 8 equal 15, adding up numbers is very uplifting. "\
+                         "1 divided by 0 is...")
+  ]
+
+  def perform(*args, **kwargs)
     Rails.logger.info "Performing demo job"
+
+    # This job can fail in strange ways, just pass fail:true
+    if kwargs[:fail]
+      raise @@job_errors.sample
+    end
 
     best = 0, "", ""
     10000.times do

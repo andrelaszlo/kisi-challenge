@@ -35,6 +35,7 @@ module JobStats
 
   def self.stats
     self.with_stats(false) do |stats|
+      puts "Stats: #{stats}"
       stats
     end    
   end

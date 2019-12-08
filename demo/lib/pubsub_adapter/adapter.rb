@@ -5,6 +5,12 @@ module ActiveJob::PubSub
   class PubSubAdapter
     using PubsubExtension
 
+    @@config = {
+      # TODO: Use this
+      max_retries: 2,
+      threads: {},
+    }
+
     def initialize(pubsub=Google::Cloud::PubSub.new)
       # TODO: How to configure easily? (And share config with worker?)
       @pubsub = pubsub
@@ -23,6 +29,10 @@ module ActiveJob::PubSub
       # separate queue where a worker just keeps checking if the job
       # deadline has passed.
       raise NotImplementedError, "Scheduled jobs are not supported"
+    end
+
+    def self.configure
+      yield @@config
     end
   end
 end
