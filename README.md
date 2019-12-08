@@ -29,6 +29,36 @@ The idea is to build a background job system that is compatible with the ActiveJ
 
 ## Configure
 
+### PubSubAdapter options
+
+The `PubSubAdapter` can be configured using a snippet like this:
+
+```ruby
+ActiveJob::PubSub::PubSubAdapter.configure do |config|
+  config[:max_retries] = 3
+  config[:worker_threads] = 8
+  config[:ack_threads] = 4
+end
+```
+
+See [`adapter.rb`](/demo/lib/pubsub_adapter/adapter.rb#L9) for all options:
+
+```ruby
+# How many times a job should be retried before it's sent to the deadletter queue
+# The total number of attempts will be max_retries + 1.
+max_retries: 3,
+# Name of the deadletter/morgue queue
+dead_letter_queue: 'deadletter',
+# String prefix to add to topics (queues)
+queue_prefix: 'activejob-',
+# String prefix to add to subscription names
+subscription_prefix: 'activejob-subscription-',
+# The number of threads used to handle received messages
+worker_threads: 8,
+# The number of threads to handle acks and nacks
+ack_threads: 4,
+```
+
 ### PubSub emulator
 
 The fastest way to try this project out is to use the PubSub emulator:
