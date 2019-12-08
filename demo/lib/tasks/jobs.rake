@@ -2,7 +2,6 @@ namespace :jobs do
   desc 'Start a Google PubSub ActiveJob worker.'
   task :work => :environment_options do
     Rails.logger.info "Starting worker"
-    puts ActiveJob::PubSub::Worker.class
     ActiveJob::PubSub::Worker.new(**@options).process_jobs
   end
 

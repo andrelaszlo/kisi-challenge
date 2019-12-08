@@ -27,8 +27,6 @@ module ActiveJob::PubSub
     end
 
     def enqueue(job)
-      puts "*** PubSub #{@pubsub} (#{@pubsub.class})"
-
       queue = job.queue_name
       if job.executions > @@config[:max_retries]
         queue = @@config[:dead_letter_queue]
