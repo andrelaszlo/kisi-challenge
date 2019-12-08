@@ -5,7 +5,6 @@ class DemoJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    puts "In DemoJob perform"
     Rails.logger.info "Performing demo job"
 
     best = 0, "", ""

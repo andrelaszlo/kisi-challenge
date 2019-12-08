@@ -1,6 +1,5 @@
 # Manage job statistics
 module JobStats
-  puts "JobStats initializing"
   class << self
     attr_accessor :job_count, :job_time, :jobs_enqueued, :best_hash
   end
@@ -10,21 +9,18 @@ module JobStats
       duration = finished - started
       job_performed duration
       Rails.logger.info "JobStats: perform.active_job ##{JobStats.job_count} took #{duration.round 2}s"
-      puts "Data:\n#{data}"
-      puts "JobStats: perform.active_job"
+      Rails.logger.debug "Data:\n#{data}"
     else
-      puts "JobStats: failed job"
+      Rails.logger.warn "JobStats: failed job #{data}"
     end
   end
 
   ActiveSupport::Notifications.subscribe(/enqueue(_at)?\.active_job/) do |name, started, finished, unique_id, data|
     self.job_enqueued
     Rails.logger.info "JobStats: Enqueued job #{name}"
-    puts "JobStats: enqueue*.active_job"
   end
 
   ActiveSupport::Notifications.subscribe "demo.hash" do |name, started, finished, unique_id, data|
-    puts "JobStats: demo.hash"
     Rails.logger.info "JobStats: Got new hash #{data}"
     self.with_stats(true) do |stats|
       count, str, hash = data

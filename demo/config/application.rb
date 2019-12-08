@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 # This module needs to be loaded early since it subscribes to ActiveSupport notifications
 require_relative '../lib/job_stats.rb'
 
-require_relative '../lib/google_pubsub_adapter.rb'
+require_relative '../lib/pubsub_adapter/pubsub.rb'
 
 module Demo
   class Application < Rails::Application
@@ -17,7 +17,7 @@ module Demo
     config.load_defaults 6.0
 
     # TODO: Change to pubsub adapter
-    Rails.application.config.active_job.queue_adapter = :google_pubsub
+    Rails.application.config.active_job.queue_adapter = :pub_sub
 
     #Google::Cloud::PubSub.configure do |config|
       #config.project_id  = "fake-project-id"
