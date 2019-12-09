@@ -1,6 +1,5 @@
 require 'google/cloud/pubsub'
 require_relative 'pubsub_extension.rb'
-require 'pry'
 
 module ActiveJob::PubSub
   class PubSubAdapter
@@ -28,6 +27,12 @@ module ActiveJob::PubSub
       retention: 7.days.to_i,
       # How long to wait until trying to execute a job again
       retry_delay: 5.minutes.seconds,
+      # Delivery mode, valid options are :at_most_once or :at_least_once
+      # At most once: Optimistically ack messages, risking lost jobs
+      # (on a worker crash)
+      # At least once: Don't ack until the job is successful, risking
+      # duplicate jobs (for long-running-jobs)
+      delivery_mode: :at_most_once,
     }
 
     def initialize(pubsub=Google::Cloud::PubSub.new)

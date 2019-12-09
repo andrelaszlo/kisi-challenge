@@ -1,5 +1,3 @@
-require 'pry'
-
 module ActiveJob::PubSub
   class Worker
     using PubsubExtension
@@ -16,6 +14,15 @@ module ActiveJob::PubSub
       @queue = queue
       @retention = ActiveJob::PubSub::PubSubAdapter.config_item(:retention)
       @deadline = ActiveJob::PubSub::PubSubAdapter.config_item(:ack_deadline)
+      @delivery_mode = ActiveJob::PubSub::PubSubAdapter.config_item(:delivery_mode)
+    end
+
+    def optimistic_ack?
+      @delivery_mode == :at_most_once
+    end
+
+    def pessimistic_ack?
+      @delivery_mode != :at_most_once
     end
 
     ##
@@ -38,6 +45,12 @@ module ActiveJob::PubSub
           return
         end
 
+        if optimistic_ack?
+          # Risk: The worker crashes before the job is completed and the job is lost.
+          # Benefit: If the job takes longer than the ack deadline to complete, it won't run twice.
+          received_message.acknowledge!
+        end
+
         job_data = JSON.load(received_message.data)
         Rails.logger.info "Processing job #{job_data}"
 
@@ -54,14 +67,18 @@ module ActiveJob::PubSub
                               "#{job.executions} attempt(s) in #{delay.inspect}"
             job.retry_job(wait: delay)
             # Only ack the failed job after successfully re-enqueueing it
-            received_message.acknowledge!
+            if pessimistic_ack?
+              received_message.acknowledge!
+            end
           rescue Exception => error_handling_err
             Rails.warn "An error occured while handling a failed job, "\
                        "this job will not be acked and retried according to "\
                        "the pubsub subscription's parameters: #{error_handling_err}"
           end
         else
-          received_message.acknowledge!
+          if pessimistic_ack?
+            received_message.acknowledge!
+          end
         end
 
       end

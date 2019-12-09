@@ -1,8 +1,5 @@
-require 'pry'
-
 class DemoController < ApplicationController
   def index()
-    # binding.pry
     @stats = JobStats.stats
   end
 

@@ -70,6 +70,12 @@ ack_deadline: 5.minutes.seconds.to_i,
 retention: 7.days.seconds.to_i,
 # How long to wait until trying to execute a job again
 retry_delay: 5.minutes.seconds,
+# Delivery mode, valid options are :at_most_once or :at_least_once
+# At most once: Optimistically ack messages, risking lost jobs
+# (on a worker crash)
+# At least once: Don't ack until the job is successful, risking
+# duplicate jobs (for long-running-jobs)
+delivery_mode: :at_most_once,
 ```
 
 ### PubSub emulator
@@ -148,14 +154,6 @@ write to stdout:
 ```
 rake jobs:to_stdout jobs:work
 ```
-
-## Subscription
-
-- Delivery type: pull
-- Subscription expiration: ?
-- Acknowledgement deadline: 10-600 seconds
-- Message retention duration: ?
-- Retain ack'd messages
 
 ## Inspiration
 
