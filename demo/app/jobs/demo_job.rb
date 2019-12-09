@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'digest'
 
@@ -15,7 +17,7 @@ class DemoJob < ApplicationJob
                          "1 divided by 0 is...")
   ]
 
-  def perform(*args, **kwargs)
+  def perform(*, **kwargs)
     Rails.logger.info "Performing demo job"
 
     # This job can fail in strange ways, just pass fail:true
@@ -24,13 +26,13 @@ class DemoJob < ApplicationJob
     end
 
     best = 0, "", ""
-    10000.times do
+    10_000.times do
       zeroes, str, hash = mine
       if ([zeroes, str, hash] <=> best) > 0
         best = zeroes, str, hash
       end
     end
-    ActiveSupport::Notifications.instrument "demo.hash", best
+    ActiveSupport::Notifications.instrument 'demo.hash', best
 
     Rails.logger.info "Job done, best hash found had #{best[0]} leading zeroes"
   end
@@ -38,18 +40,16 @@ class DemoJob < ApplicationJob
   private
 
   # "Mine" kisicoins, ie find strings that have as many leading zeroes as possible.
-  def mine()
+  def mine
     str = SecureRandom.alphanumeric 64
     hash = Digest::SHA256.digest str
 
     # Count leading zeroes
     zeroes = 0
     hash.bytes.each do |byte|
-      mask = 0b10000000
+      mask = 0b1000_0000
       while mask != 0
-        if byte & mask != 0
-          return zeroes, str, hash
-        end
+        return zeroes, str, hash if byte & mask != 0
         zeroes += 1
         mask >>= 1
       end

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class DemoController < ApplicationController
-  def index()
+  def index
     @stats = JobStats.stats
   end
 
-  def start_job()
+  def start_job
     num_jobs = params[:num_jobs].to_i
     Rails.logger.info "Starting #{num_jobs} new jobs"
     num_jobs.times do
@@ -12,15 +14,15 @@ class DemoController < ApplicationController
     redirect_back(fallback_location: '/')
   end
 
-  def delayed_job()
-    Rails.logger.info "Starting a job in five minutes"
+  def delayed_job
+    Rails.logger.info 'Starting a job in five minutes'
     DemoJob.set(wait: 5.minutes).perform_later
     redirect_back(fallback_location: '/')
   end
 
-  def fail_job()
-    Rails.logger.info "Starting a failing job"
-    DemoJob.perform_later fail:true
+  def fail_job
+    Rails.logger.info 'Starting a failing job'
+    DemoJob.perform_later fail: true
     redirect_back(fallback_location: '/')
   end
 end
