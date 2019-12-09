@@ -16,7 +16,6 @@ module Demo
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
-    # TODO: Change to pubsub adapter
     Rails.application.config.active_job.queue_adapter = :pub_sub
 
     # Configuration example:

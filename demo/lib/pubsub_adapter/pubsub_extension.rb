@@ -21,7 +21,6 @@ module ActiveJob
           rescue Google::Cloud::AlreadyExistsError
             topic(topic_name)
           end
-          # TODO: not receiving messages ok
         end
 
         # Get or create the subscription associated with a queue.
