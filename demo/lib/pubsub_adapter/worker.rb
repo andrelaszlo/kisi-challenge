@@ -14,6 +14,8 @@ module ActiveJob::PubSub
         push: ActiveJob::PubSub::PubSubAdapter.config_item(:ack_threads)
       }
       @queue = queue
+      @retention = ActiveJob::PubSub::PubSubAdapter.config_item(:retention)
+      @deadline = ActiveJob::PubSub::PubSubAdapter.config_item(:ack_deadline)
     end
 
     ##
@@ -21,7 +23,21 @@ module ActiveJob::PubSub
     def process_jobs
       Rails.logger.info "Waiting for jobs in the '#{@queue}' queue"
       sub = @pubsub.get_or_create_subscription(@queue)
+
+      # Update subscription settings if necessary
+      sub.retention = @retention unless sub.retention == @retention
+      sub.deadline = @deadline unless sub.deadline == @deadline
+
       subscriber = sub.listen(threads: @threads) do |received_message|
+        # Use PubSub's ack deadline as a crude timer:
+        # If the message timestamp is in the future, just don't ack
+        # the message and let the message expire.
+        timestamp = (received_message.attributes["timestamp"] || 0).to_i
+        if timestamp > Time.now.to_i
+          Rails.logger.debug "Ignoring message #{received_message.message_id} until #{Time.at(timestamp)}"
+          return
+        end
+
         job_data = JSON.load(received_message.data)
         Rails.logger.info "Processing job #{job_data}"
 
@@ -33,8 +49,10 @@ module ActiveJob::PubSub
             Rails.logger.warn "Job failed: #{err.inspect}"
             job = ActiveJob::Base.deserialize job_data
             job.executions += 1
-            job.class.perform_later job
-            Rails.logger.info "Re-enqueued failed job after #{job.executions} attempt(s)"
+            delay = ActiveJob::PubSub::PubSubAdapter.config_item(:retry_delay)
+            Rails.logger.info "Re-enqueuing failed job #{job} after "\
+                              "#{job.executions} attempt(s) in #{delay.inspect}"
+            job.retry_job(wait: delay)
             # Only ack the failed job after successfully re-enqueueing it
             received_message.acknowledge!
           rescue Exception => error_handling_err

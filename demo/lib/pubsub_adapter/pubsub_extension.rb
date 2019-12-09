@@ -27,9 +27,12 @@ module ActiveJob::PubSub
       # @param [Symbol, String] queue Queue name
       def get_or_create_subscription(queue)
         prefix = ActiveJob::PubSub::PubSubAdapter.config_item :subscription_prefix
+        deadline = ActiveJob::PubSub::PubSubAdapter.config_item :ack_deadline
+        retention = ActiveJob::PubSub::PubSubAdapter.config_item :retention
         sub_name = "#{prefix}#{queue}"
         begin
-          subscription(sub_name) || get_or_create_topic(queue).subscribe(sub_name)
+          subscription(sub_name) ||
+            get_or_create_topic(queue).subscribe(sub_name, deadline: deadline, retention: retention)
         rescue Google::Cloud::AlreadyExistsError
           subscription(sub_name)
         end

@@ -20,15 +20,11 @@ module Demo
     Rails.application.config.active_job.queue_adapter = :pub_sub
 
     ActiveJob::PubSub::PubSubAdapter.configure do |config|
-      config[:max_retries] = 3
-      config[:worker_threads] = 8
-      config[:ack_threads] = 4
+      config[:worker_threads] = 1
+      config[:ack_threads] = 1
+      config[:ack_deadline] = 11.seconds.to_i
+      config[:retry_delay] = 10.seconds
     end
-
-    #Google::Cloud::PubSub.configure do |config|
-      #config.project_id  = "fake-project-id"
-      #config.credentials = "path/to/keyfile.json"
-    #end
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

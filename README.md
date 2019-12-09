@@ -31,6 +31,11 @@ The idea is to build a background job system that is compatible with the ActiveJ
 
 ### PubSubAdapter options
 
+The default configuration will retry a job twice if it fails, totalling 3 attempts.
+
+There will be a 5 minute delay between attempts, after which the job
+will be sent to the dead-letter topic.
+
 The `PubSubAdapter` can be configured using a snippet like this:
 
 ```ruby
@@ -57,6 +62,14 @@ subscription_prefix: 'activejob-subscription-',
 worker_threads: 8,
 # The number of threads to handle acks and nacks
 ack_threads: 4,
+# The maximum number of seconds after a job is started before
+# the worker should acknowledge the message. (Seconds)
+ack_deadline: 5.minutes.seconds.to_i,
+# How long to retain unacknowledged messages in the queue, from
+# the moment a message is published.
+retention: 7.days.seconds.to_i,
+# How long to wait until trying to execute a job again
+retry_delay: 5.minutes.seconds,
 ```
 
 ### PubSub emulator
