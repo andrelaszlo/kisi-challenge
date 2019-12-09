@@ -155,6 +155,15 @@ write to stdout:
 rake jobs:to_stdout jobs:work
 ```
 
+### Multiple queues
+
+If you are using multiple queues, you need to start one worker per
+queue. The queue name can be set using th environment variable `WORKER_QUEUE`:
+
+```
+WORKER_QUEUE="transcode" rake jobs:to_stdout jobs:work
+```
+
 ## Inspiration
 
 In the spirit of full disclosure; I'm
