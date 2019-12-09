@@ -19,12 +19,13 @@ module Demo
     # TODO: Change to pubsub adapter
     Rails.application.config.active_job.queue_adapter = :pub_sub
 
-    ActiveJob::PubSub::PubSubAdapter.configure do |config|
-      config[:worker_threads] = 1
-      config[:ack_threads] = 1
-      config[:ack_deadline] = 11.seconds.to_i
-      config[:retry_delay] = 10.seconds
-    end
+    # Configuration example:
+    # ActiveJob::PubSub::PubSubAdapter.configure do |config|
+    #   config[:worker_threads] = 1
+    #   config[:ack_threads] = 1
+    #   config[:ack_deadline] = 11.seconds.to_i
+    #   config[:retry_delay] = 10.seconds
+    # end
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

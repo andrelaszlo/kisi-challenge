@@ -32,15 +32,20 @@ module ActiveJob::PubSub
       # (on a worker crash)
       # At least once: Don't ack until the job is successful, risking
       # duplicate jobs (for long-running-jobs)
-      delivery_mode: :at_most_once,
+      delivery_mode: :at_least_once,
     }
 
     def initialize(pubsub=Google::Cloud::PubSub.new)
       @pubsub = pubsub
-      # TODO: sanity check config times
       if @@config[:retention] > ((@@config[:max_retries]+1) * @@config[:retry_delay].to_i)
         Rails.logger.warn "The configure retention time #{@@config[:rentention]} "\
                           "is lower than the worst case retry time, jobs may be lost"
+      end
+
+      if @@config[:ack_deadline] < 30.seconds && @@config[delivery_mode] == :at_least_once
+        Rails.logger.warn "When 'at-least-once' delivery (pessimistic acking) is "\
+                          "set, make sure to have an ack deadline longer than "\
+                          "the time it takes to run a job."
       end
     end
 
