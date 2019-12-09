@@ -15,6 +15,12 @@ class DemoController < ApplicationController
     redirect_back(fallback_location: '/')
   end
 
+  def delayed_job()
+    Rails.logger.info "Starting a job in five minutes"
+    DemoJob.set(wait: 5.minutes).perform_later
+    redirect_back(fallback_location: '/')
+  end
+
   def fail_job()
     Rails.logger.info "Starting a failing job"
     DemoJob.perform_later fail:true

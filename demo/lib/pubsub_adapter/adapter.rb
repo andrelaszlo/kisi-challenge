@@ -22,7 +22,7 @@ module ActiveJob::PubSub
       ack_threads: 4,
       # The maximum number of seconds after a job is started before
       # the worker should acknowledge the message. Integer representing seconds.
-      ack_deadline: 5.minutes.to_i + 1,
+      ack_deadline: 1.minute.to_i,
       # How long to retain unacknowledged messages in the queue, from
       # the moment a message is published. (
       retention: 7.days.to_i,
